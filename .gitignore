@@ -1,0 +1,16 @@
+node_modules/
+.expo/
+dist/
+.env
+.env.development
+.env.production
+.env
+.env.*
+!.env.example
+firebase-debug.log
+.firebaserc
+functions/lib/
+functions/node_modules/
+functions/.env
+functions/.env.*
+!functions/.env.example
