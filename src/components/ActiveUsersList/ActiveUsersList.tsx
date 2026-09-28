@@ -11,17 +11,18 @@ import * as Styles from './ActiveUsersList.styles';
 
 export interface ActiveUsersListProps {
   currentUser: User;
+  sessionId: string;
   onWatch: (user: AppUser) => void;
   disabled: boolean;
 }
 
-export function ActiveUsersList({ currentUser, onWatch, disabled }: ActiveUsersListProps) {
+export function ActiveUsersList({ currentUser, sessionId, onWatch, disabled }: ActiveUsersListProps) {
   const { openBroadcast } = useSound();
 
   const [users, setUsers] = useState<AppUser[]>([]);
 
   useEffect(() => {
-    const q = query(collection(db, 'users'), where('online', '==', true));
+    const q = query(collection(db, 'users'), where('currentSessionId', '==', sessionId));
     const unsub = onSnapshot(q, (snap) => {
       const list = snap.docs
         .map((d) => d.data() as AppUser)
@@ -29,11 +30,11 @@ export function ActiveUsersList({ currentUser, onWatch, disabled }: ActiveUsersL
       // usuários transmitindo aparecem primeiro
       list.sort((a, b) => Number(b.isLive) - Number(a.isLive));
       setUsers(list);
-      if (list[0].isLive) openBroadcast()
+      if (list[0]?.isLive) openBroadcast()
     });
 
     return unsub;
-  }, [currentUser]);
+  }, [currentUser, sessionId]);
 
   if (users.length === 0) {
     return (
@@ -43,10 +44,10 @@ export function ActiveUsersList({ currentUser, onWatch, disabled }: ActiveUsersL
           <UserRoundGroup size={32} />
         </Styles.ImageContainer>
         <Heading level={2}>
-          Nenhum usuário ativo no momento.
+          Nenhum outro usuário nesta sessão ainda.
         </Heading>
         <SubHeading>
-          Quando alguem estiver utilizando o Streama, ele aparecerá aqui.
+          Compartilhe o código da sessão para outras pessoas ingressarem.
         </SubHeading>
 
       </Styles.EmptyState>

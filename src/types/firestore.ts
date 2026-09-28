@@ -6,6 +6,19 @@ export type FpsOption = 5 | 72030 | 72060 | 108030 | 108060;
 /** Status do ciclo de vida de uma transmissão. */
 export type BroadcastStatus = 'live' | 'ended';
 
+/** Status do ciclo de vida de uma sessão. */
+export type SessionStatus = 'active' | 'closed';
+
+/** Documento em `sessions/{sessionId}`. */
+export interface SessionDoc {
+  code: string;
+  hostId: string;
+  hostName: string;
+  status: SessionStatus;
+  createdAt?: Timestamp | FieldValue;
+  closedAt?: Timestamp | FieldValue;
+}
+
 /** Status do ciclo de vida da conexão de um espectador específico. */
 export type ViewerStatus = 'requested' | 'offered' | 'answered' | 'closed';
 
@@ -19,6 +32,8 @@ export interface AppUser {
   status: string;
   isLive: boolean;
   liveBroadcastId: string | null;
+  /** Sessão em que o usuário está atualmente. `null` quando não está em nenhuma. */
+  currentSessionId: string | null;
   lastSeen?: Timestamp | FieldValue;
 }
 

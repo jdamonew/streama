@@ -18,6 +18,9 @@ export type { CardProps, CardPadding } from './components/Card';
 export { Input } from './components/Input';
 export type { InputProps } from './components/Input';
 
+export { Loading } from './components/Loading';
+export type { LoadingProps, LoadingSize } from './components/Loading';
+
 export { Modal } from './components/Modal';
 export type { ModalProps } from './components/Modal';
 

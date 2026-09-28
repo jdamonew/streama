@@ -109,6 +109,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
   async function logout(): Promise<void> {
     if (auth.currentUser) {
       await upsertUserDoc(auth.currentUser, false, 'offline');
+      // encerrar a sessão de autenticação também tira o usuário de qualquer
+      // sessão de compartilhamento em que ele estivesse
+      await updateDoc(doc(db, 'users', auth.currentUser.uid), {
+        currentSessionId: null,
+      }).catch(() => {});
     }
     await signOut(auth);
   }
