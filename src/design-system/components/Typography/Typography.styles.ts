@@ -22,10 +22,10 @@ const iconForm = {
   `,
 } satisfies Record<IconType, ReturnType<typeof css>>;
 
-export const StyledHeading = styled.h1<{ $level: HeadingLevel }>`
+export const StyledHeading = styled.h1<{ $level: HeadingLevel, $color?: string }>`
   margin: 0;
   font-weight: ${({ theme }) => theme.typography.fontWeights.bold};
-  color: ${({ theme }) => theme.colors.textPrimary};
+  color: ${({ theme, $color }) => $color ? $color : theme.colors.textPrimary};
   ${({ $level }) => headingSizes[$level]};
   `;
 

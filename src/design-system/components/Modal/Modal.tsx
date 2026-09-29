@@ -3,12 +3,15 @@ import * as Styles from './Modal.styles';
 
 export interface ModalProps {
   children: ReactNode;
+  width?: number;
 }
 
-export function Modal({ children }: ModalProps) {
+export function Modal({ children, width, ...rest }: ModalProps) {
   return (
     <Styles.StyledModalOverlay>
-      <Styles.StyledModalContent>{children}</Styles.StyledModalContent>
+      <Styles.StyledModalContent $width={width} {...rest}>
+        {children}
+      </Styles.StyledModalContent>
     </Styles.StyledModalOverlay>
   );
 }

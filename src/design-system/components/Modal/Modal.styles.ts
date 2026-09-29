@@ -9,14 +9,15 @@ export const StyledModalOverlay = styled.div`
   justify-content: center;
   padding: ${({ theme }) => theme.spacing.md};
   z-index: ${({ theme }) => theme.zIndex.modal};
-  /* width: 50%; */
-`;
+  /* width: 100%; */
+  `;
 
-export const StyledModalContent = styled.div`
+export const StyledModalContent = styled.div<{ $width?: number }>`
   background: ${({ theme }) => theme.colors.surface};
   border-radius: ${({ theme }) => theme.radii.xl};
   padding: ${({ theme }) => theme.spacing.xl};
+  max-width: ${({ $width }) => $width ? $width : 540}px;
   width: 100%;
-  max-width: 540px;
   box-shadow: ${({ theme }) => theme.shadows.lg};
+  /* max-width: 850px; */
 `;

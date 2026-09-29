@@ -8,6 +8,7 @@ export type IconType = 'square' | 'circle';
 export interface HeadingProps extends HTMLAttributes<HTMLHeadingElement> {
   level?: HeadingLevel;
   children: ReactNode;
+  color?: string;
 }
 export interface HeadingIconProps extends HTMLAttributes<HTMLHeadingElement> {
   children: ReactNode;
@@ -18,10 +19,10 @@ export interface SubHeadingProps extends HTMLAttributes<HTMLHeadingElement> {
   children: ReactNode;
 }
 
-export function Heading({ level = 1, children, ...rest }: HeadingProps) {
+export function Heading({ level = 1, children, color, ...rest }: HeadingProps) {
   const as = (`h${level}` as unknown) as 'h1' | 'h2' | 'h3';
   return (
-    <Styles.StyledHeading as={as} $level={level} {...rest}>
+    <Styles.StyledHeading as={as} $level={level} $color={color} {...rest}>
       {children}
     </Styles.StyledHeading>
   );

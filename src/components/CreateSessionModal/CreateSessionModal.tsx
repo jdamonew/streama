@@ -30,7 +30,7 @@ export function CreateSessionModal({
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
     } catch {
-      // clipboard indisponível (ex.: contexto não seguro); o código já está visível na tela
+      console.error('Erro ao copiar')
     }
   }
 
@@ -38,7 +38,7 @@ export function CreateSessionModal({
     <Modal>
       <HeadingIcon icon={KeyRound}>
         <Heading level={2}>Código da sessão</Heading>
-        <SubHeading>Compartilhe esse código com quem você quer que ingresse.</SubHeading>
+        <SubHeading>Compartilhe esse código com seus amigos.</SubHeading>
       </HeadingIcon>
 
       <Styles.FieldGroup>

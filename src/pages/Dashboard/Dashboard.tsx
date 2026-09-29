@@ -125,7 +125,7 @@ export function Dashboard({ currentUser }: DashboardProps) {
         <Styles.SectionSpacer>
           <Card>
             <Text tone="danger" small>
-              A sessão foi encerrada pelo criador.
+              A sessão foi encerrada pelo host.
             </Text>
             <Button variant="secondary" onClick={dismissClosedNotice}>
               Ok, entendi

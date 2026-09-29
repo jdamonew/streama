@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import App from './App';
 import { ThemeProvider } from 'styled-components';
 import { theme, GlobalStyle } from '@design-system';
-import App from './App';
 import { MantineProvider } from '@mantine/core';
 
 import './styles/globals.scss';
