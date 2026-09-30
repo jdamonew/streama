@@ -113,7 +113,7 @@ export const BuyMeACoffeeFloat = () => {
                                 <Styles.CopyPixContainer>
                                     <Heading level={3}>Escaneie o QR Code ou copie a chave pix:</Heading>
                                     <Input value={pixInfo} />
-                                    <Button variant="secondary" onClick={handleCopy}  >
+                                    <Button variant="secondary" onClick={handleCopy} disabled={blur}  >
                                         {copied ? <Check size={16} /> : <Copy size={16} />}
                                         {copied ? 'Copiado!' : 'Copiar código'}
                                     </Button>

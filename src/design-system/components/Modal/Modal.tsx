@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import * as Styles from './Modal.styles';
 
-export interface ModalProps {
+export interface ModalProps extends React.HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
   width?: number;
 }

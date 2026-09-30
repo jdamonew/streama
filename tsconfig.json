@@ -19,11 +19,10 @@
     "noFallthroughCasesInSwitch": true,
     "forceConsistentCasingInFileNames": true,
 
-    "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
-      "@design-system": ["src/design-system/index.ts"],
-      "@design-system/*": ["src/design-system/*"]
+      "@/*": ["./src/*"],
+      "@design-system": ["./src/design-system/index.ts"],
+      "@design-system/*": ["./src/design-system/*"]
     }
   },
   "include": ["src"],
