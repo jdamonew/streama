@@ -59,8 +59,8 @@ export function CircularCountdown({
                     x2="100%"
                     y2="100%"
                 >
-                    <stop offset="0%" stopColor="#0788A8" />
-                    <stop offset="100%" stopColor="#83E87C" />
+                    <stop offset="0%" stopColor="#a260f8" />
+                    <stop offset="100%" stopColor="#3e018d" />
                 </linearGradient>
             </defs>
 
@@ -69,7 +69,7 @@ export function CircularCountdown({
                 cy={size / 2}
                 r={radius}
                 fill="none"
-                stroke="#6F7842"
+                stroke="#e0c8fc"
                 strokeWidth={strokeWidth}
                 opacity={0.65}
             />
@@ -92,7 +92,7 @@ export function CircularCountdown({
                 y="50%"
                 dominantBaseline="central"
                 textAnchor="middle"
-                fill="#FFFFFF"
+                fill="#3e018d"
                 fontSize={size * 0.4}
                 fontWeight="600"
             >

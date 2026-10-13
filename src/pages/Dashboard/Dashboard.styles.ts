@@ -42,7 +42,20 @@ export const PanelHeaderRow = styled.div`
 
 export const SectionSpacer = styled.div`
   margin-bottom: ${({ theme }) => theme.spacing.lg};
-`;
+  `;
+export const AlertContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+`
+
+export const CloseAlertContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  justify-content: center
+`
 
 export const SessionBar = styled.div`
   display: flex;

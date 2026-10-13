@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { KeyRound, LogOut, MonitorPlay, RefreshCw, Users2 } from 'lucide-react';
+import { KeyRound, LogOut, MonitorPlay, MonitorX, RefreshCw, Users2 } from 'lucide-react';
 import type { User } from 'firebase/auth';
 import { useAuth } from '@/context/AuthContext';
 import { useBroadcast } from '@/hooks/useBroadcast';
@@ -18,6 +18,7 @@ import { HeadingIcon, SubHeading } from '@/design-system/components/Typography';
 import LogoStreama from '../../assets/logo.png';
 import type { StartBroadcastConfig } from '@/types/firestore';
 import * as Styles from './Dashboard.styles';
+import { CircularCountdown } from '@/design-system/components/CircularCountdown';
 
 export interface DashboardProps {
   currentUser: User;
@@ -65,8 +66,7 @@ export function Dashboard({ currentUser }: DashboardProps) {
     dismissEndedNotice,
   } = useBroadcast(currentUser);
 
-  // Se a sessão atual deixar de existir (encerrada / o usuário saiu), garante
-  // que nenhuma transmissão fique "pendurada" em segundo plano.
+
   useEffect(() => {
     if (!session) {
       if (isBroadcasting) void stopBroadcast();
@@ -124,12 +124,29 @@ export function Dashboard({ currentUser }: DashboardProps) {
       {sessionClosedNotice && (
         <Styles.SectionSpacer>
           <Card>
-            <Text tone="danger" small>
-              A sessão foi encerrada pelo host.
-            </Text>
-            <Button variant="secondary" onClick={dismissClosedNotice}>
-              Ok, entendi
-            </Button>
+            <Styles.AlertContainer>
+              <HeadingIcon icon={MonitorX}>
+                <Heading level={2}>
+                  Sessão encerrada
+                </Heading>
+                <SubHeading>
+                  O host encerrou a sessão.
+                </SubHeading>
+              </HeadingIcon>
+
+              <Styles.CloseAlertContainer>
+                <CircularCountdown
+                  duration={20}
+                  size={64}
+                  strokeWidth={5}
+                  onComplete={dismissClosedNotice}
+                />
+                <Button variant="secondary" size='sm' onClick={dismissClosedNotice}>
+                  Fechar
+                </Button>
+              </Styles.CloseAlertContainer>
+            </Styles.AlertContainer>
+
           </Card>
         </Styles.SectionSpacer>
       )}

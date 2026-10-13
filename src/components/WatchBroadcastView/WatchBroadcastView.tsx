@@ -41,9 +41,9 @@ export function WatchBroadcastView({
           Assistindo: <strong>{watching.hostName}</strong>
         </span>
         <Styles.PanelButtons>
-          <Button variant="outline" onClick={() => setShowModal(true)} disabled={broadcastEnded}>
+          {/* <Button variant="outline" onClick={() => setShowModal(true)} disabled={broadcastEnded}>
             Modo Cinema
-          </Button>
+          </Button> */}
           <Button variant="outline" onClick={goFullscreen} disabled={broadcastEnded}>
             Tela cheia
           </Button>
