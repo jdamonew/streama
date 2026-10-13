@@ -1,16 +1,22 @@
 import { useState } from 'react'
 import { Button, Heading, Input, Modal } from '@/design-system'
-import * as Styles from './BuyMeACoffeeFloat.styles';
+import { SubHeading } from '@/design-system/components/Typography';
+import { useFeatureFlagPayload } from '@posthog/react';
+import { Check, Copy, HandHelping, X } from 'lucide-react';
+import { QRCodeSVG } from 'qrcode.react';
 
 import BillieCat from '@/assets/videos/cat-01.webm';
 import BillieCat2 from '@/assets/videos/cat-02.webm';
-import PixelHeart from '@/assets/heart-pixel.png';
-import { useFeatureFlagPayload } from '@posthog/react';
-import { Check, Copy, HandHelping, X } from 'lucide-react';
-import { SubHeading } from '@/design-system/components/Typography';
-import { QRCodeSVG } from 'qrcode.react';
+import PixelHeart from '@/assets/pixelart/heart-pixel.png';
+import PixelGithub from '@/assets/pixelart/github.png';
+import PixelLinkedin from '@/assets/pixelart/linkedin.png';
+
+import * as Styles from './BuyMeACoffeeFloat.styles';
+import { useIsMobile } from '@/hooks/useIsMobile';
 
 export const BuyMeACoffeeFloat = () => {
+
+    const isMob = useIsMobile(890);
 
     const pixInfoPayload = useFeatureFlagPayload('pix-infos')
     const pixInfo =
@@ -55,21 +61,42 @@ export const BuyMeACoffeeFloat = () => {
             {showModal &&
                 <Modal width={1080} style={{ padding: 0, display: 'flex' }}>
 
-                    <Styles.PanelModal>
-                        <Heading level={1} color='#FFFFFF'>
-                            Gostou do <br /> projeto?
-                        </Heading>
-                        <video
-                            autoPlay
-                            loop
-                            muted
-                            playsInline
-                            src={BillieCat2}
-                            width={100}
-                        />
-                    </Styles.PanelModal>
+                    {
+                        !isMob &&
+                        <Styles.PanelModal>
+                            <Styles.PanelHeaderModal>
+                                <Heading level={1} color='#FFFFFF'>
+                                    Gostou do <br /> projeto?
+                                </Heading>
+                                <video
+                                    autoPlay
+                                    loop
+                                    muted
+                                    playsInline
+                                    src={BillieCat2}
+                                    width={125}
+                                />
+                            </Styles.PanelHeaderModal>
 
-                    <Styles.DetailsModal>
+                            <Styles.SocialsContainer>
+                                <Heading level={2} color='#FFFFFF'>
+                                    Me conheça:
+                                </Heading>
+                                <Styles.Socials>
+                                    <a href={import.meta.env.VITE_GITHUB} target='_blank'>
+                                        <img src={PixelGithub} width={50} />
+                                    </a>
+                                    <a href={import.meta.env.VITE_LINKEDIN} target='_blank'>
+                                        <img src={PixelLinkedin} width={50} />
+                                    </a>
+
+                                </Styles.Socials>
+
+                            </Styles.SocialsContainer>
+                        </Styles.PanelModal>
+                    }
+
+                    <Styles.DetailsModal $isMob={!isMob}>
 
                         <Styles.ModalActions>
                             <Styles.CloseModal>
@@ -136,8 +163,6 @@ export const BuyMeACoffeeFloat = () => {
                         </Styles.TextModal>
 
                     </Styles.DetailsModal>
-
-
 
                 </Modal>
             }

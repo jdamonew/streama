@@ -9,20 +9,42 @@ export const FloatStyles = styled.div`
 export const PanelModal = styled.div`
     background-color: ${({ theme }) => theme.colors.primaryDark};
     border-radius: ${({ theme }) => theme.radii.xl} 0 0 ${({ theme }) => theme.radii.xl};
-    padding: ${({ theme }) => theme.spacing.xxl} ${({ theme }) => theme.spacing.md} 0 ${({ theme }) => theme.spacing.xxl};
+    padding: ${({ theme }) => theme.spacing.xxl} ${({ theme }) => theme.spacing.xl} ${({ theme }) => theme.spacing.xxl} ${({ theme }) => theme.spacing.md};
     width: 30%;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    align-items: flex-end;
+    justify-content: space-between;
+    /* gap: 32px; */
 
     h1{
-        font-size: 30px;
+        font-size: 50px;
+        text-align: right;
+        line-height: 45px;
     }
 `
-export const DetailsModal = styled.div`
-    /* background-color: ${({ theme }) => theme.colors.primary}; */
+
+export const PanelHeaderModal = styled.div`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 32px;
+`;
+
+export const SocialsContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 16px;
+    width: 100%;
+
+    
+`
+
+export const DetailsModal = styled.div<{ $isMob: boolean }>`
     height: 100%;
-    width: 70%;
+    width: ${({ $isMob }) => $isMob ? 70 : 100}%;
     padding: ${({ theme }) => theme.spacing.lg};
 `
 
@@ -105,7 +127,17 @@ width: 100%;
 export const ShowPix = styled.div`
     position: absolute;
     top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-    z-index: 999;
+    left: 50%;
+    transform: translate(-50%, -50%);
+`
+
+export const Socials = styled.div`
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+
+    /* img{
+        cursor: pointer;
+    } */
+
 `
