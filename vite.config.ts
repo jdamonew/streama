@@ -14,7 +14,8 @@ export default defineConfig({
   server: {
     port: 5173,
     allowedHosts: [
-      'streama.queendom.dev'
+      'streama.queendom.dev',
+      'jdamonew.github.io/streama'
     ]
   },
 });
