@@ -218,7 +218,7 @@ export function useBroadcast(currentUser: User | null): UseBroadcastResult {
           { merge: true }
         );
 
-        // Se o usuário encerrar pelo controle nativo do navegador ("Parar de compartilhar")
+
         const [videoTrack] = stream.getVideoTracks();
         if (videoTrack) {
           videoTrack.onended = () => {
@@ -226,7 +226,7 @@ export function useBroadcast(currentUser: User | null): UseBroadcastResult {
           };
         }
 
-        // Escuta novos pedidos de espectadores e cria uma conexão para cada um
+
         const viewersCol = collection(broadcastRef, 'viewers');
         const unsub = onSnapshot(viewersCol, (snap) => {
           console.log('snap =>', snap.docs.filter((d) => (d.data() as ViewerDoc).status !== 'closed'))
@@ -256,8 +256,6 @@ export function useBroadcast(currentUser: User | null): UseBroadcastResult {
     [currentUser, connectToViewer, stopBroadcast]
   );
 
-  // Muda a qualidade em tempo real. Como o MESMO track é enviado para todos os
-  // espectadores, aplicar a constraint uma vez reflete automaticamente para todos.
   const changeHostQuality = useCallback((fps: FpsOption): void => {
     const [track] = hostStreamRef.current?.getVideoTracks() ?? [];
     if (track) {
@@ -345,7 +343,7 @@ export function useBroadcast(currentUser: User | null): UseBroadcastResult {
         });
         viewerUnsubsRef.current.push(unsubHostCandidates);
 
-        // Detecta quando o apresentador encerra a transmissão
+
         const unsubBroadcast = onSnapshot(broadcastDocRef, (snap) => {
           const data = snap.data() as BroadcastDoc | undefined;
           if (data?.status === 'ended') {
@@ -370,7 +368,7 @@ export function useBroadcast(currentUser: User | null): UseBroadcastResult {
           status: 'closed',
         });
       } catch {
-        // ignora se já não existir
+
       }
     }
     cleanupViewer();
@@ -379,7 +377,6 @@ export function useBroadcast(currentUser: User | null): UseBroadcastResult {
     setBroadcastEnded(false);
   }, [currentUser, cleanupViewer]);
 
-  // Fecha o aviso de "transmissão encerrada" e limpa a tela do espectador
   const dismissEndedNotice = useCallback((): void => {
     setBroadcastEnded(false);
     watchingRef.current = null;

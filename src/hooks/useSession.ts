@@ -16,7 +16,6 @@ import { db } from '@/firebase';
 import type { AppUser, SessionDoc } from '@/types/firestore';
 
 const CODE_LENGTH = 6;
-// evita caracteres fáceis de confundir (0/O, 1/I/L)
 const CODE_ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
 
 function generateSessionCode(): string {
@@ -63,7 +62,6 @@ export function useSession(currentUser: User | null): UseSessionResult {
 
   const sessionDocUnsubRef = useRef<Unsubscribe | null>(null);
 
-  // Escuta o próprio documento de usuário para saber em qual sessão ele está.
   useEffect(() => {
     if (!currentUser) {
       setCurrentSessionId(null);
@@ -81,7 +79,6 @@ export function useSession(currentUser: User | null): UseSessionResult {
     return unsub;
   }, [currentUser]);
 
-  // Sempre que a sessão atual mudar, (re)assina o documento dessa sessão.
   useEffect(() => {
     sessionDocUnsubRef.current?.();
     sessionDocUnsubRef.current = null;
@@ -96,10 +93,9 @@ export function useSession(currentUser: User | null): UseSessionResult {
       const data = snap.data() as SessionDoc | undefined;
 
       if (!data || data.status === 'closed') {
-        // sessão foi encerrada (pelo host) enquanto este usuário estava nela
         setSessionClosedNotice(true);
         setSession(null);
-        updateDoc(doc(db, 'users', currentUser.uid), { currentSessionId: null }).catch(() => {});
+        updateDoc(doc(db, 'users', currentUser.uid), { currentSessionId: null }).catch(() => { });
         return;
       }
 
@@ -208,7 +204,7 @@ export function useSession(currentUser: User | null): UseSessionResult {
 
   const leaveSession = useCallback(async (): Promise<void> => {
     if (!currentUser) return;
-    await updateDoc(doc(db, 'users', currentUser.uid), { currentSessionId: null }).catch(() => {});
+    await updateDoc(doc(db, 'users', currentUser.uid), { currentSessionId: null }).catch(() => { });
   }, [currentUser]);
 
   const endSession = useCallback(async (): Promise<void> => {
@@ -221,7 +217,7 @@ export function useSession(currentUser: User | null): UseSessionResult {
       });
     } finally {
       await updateDoc(doc(db, 'users', currentUser.uid), { currentSessionId: null }).catch(
-        () => {}
+        () => { }
       );
     }
   }, [currentUser, session]);

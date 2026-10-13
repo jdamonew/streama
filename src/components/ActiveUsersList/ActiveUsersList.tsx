@@ -27,7 +27,7 @@ export function ActiveUsersList({ currentUser, sessionId, onWatch, disabled }: A
       const list = snap.docs
         .map((d) => d.data() as AppUser)
         .filter((u) => u.uid !== currentUser.uid);
-      // usuários transmitindo aparecem primeiro
+
       list.sort((a, b) => Number(b.isLive) - Number(a.isLive));
       setUsers(list);
       if (list[0]?.isLive) openBroadcast()
