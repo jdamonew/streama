@@ -4,6 +4,7 @@ import path from 'node:path';
 
 export default defineConfig({
   plugins: [react()],
+  base: '/streama/',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
