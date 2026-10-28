@@ -1,5 +1,13 @@
 import { useEffect, useState } from 'react';
-import { KeyRound, LogOut, MonitorPlay, MonitorX, RefreshCw, Users2 } from 'lucide-react';
+import {
+  Camera,
+  KeyRound,
+  LogOut,
+  MonitorPlay,
+  MonitorX,
+  RefreshCw,
+  Users2,
+} from 'lucide-react';
 import type { User } from 'firebase/auth';
 import { useAuth } from '@/context/AuthContext';
 import { useBroadcast } from '@/hooks/useBroadcast';
@@ -19,6 +27,10 @@ import LogoStreama from '../../assets/logo.png';
 import type { StartBroadcastConfig } from '@/types/firestore';
 import * as Styles from './Dashboard.styles';
 import { CircularCountdown } from '@/design-system/components/CircularCountdown';
+import { CameraModal } from '@/components/CameraModal';
+import { CameraGrid } from '@/components/CameraGrid';
+import { doc, updateDoc } from 'firebase/firestore';
+import { db } from '@/firebase';
 
 export interface DashboardProps {
   currentUser: User;
@@ -31,6 +43,8 @@ export function Dashboard({ currentUser }: DashboardProps) {
   const [showBroadcastModal, setShowBroadcastModal] = useState(false);
   const [showCreateSessionModal, setShowCreateSessionModal] = useState(false);
   const [showJoinSessionModal, setShowJoinSessionModal] = useState(false);
+  const [showCameraModal, setShowCameraModal] = useState(false);
+  const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
 
   const {
     session,
@@ -66,7 +80,6 @@ export function Dashboard({ currentUser }: DashboardProps) {
     dismissEndedNotice,
   } = useBroadcast(currentUser);
 
-
   useEffect(() => {
     if (!session) {
       if (isBroadcasting) void stopBroadcast();
@@ -75,7 +88,31 @@ export function Dashboard({ currentUser }: DashboardProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
-  async function handleStartBroadcast(config: StartBroadcastConfig): Promise<void> {
+  useEffect(
+    () => () => cameraStream?.getTracks().forEach((track) => track.stop()),
+    [cameraStream],
+  );
+
+  async function handleStartCamera(stream: MediaStream): Promise<void> {
+    setCameraStream(stream);
+    setShowCameraModal(false);
+    await updateDoc(doc(db, 'users', currentUser.uid), { cameraActive: true });
+    stream.getVideoTracks()[0].onended = () => {
+      void handleStopCamera();
+    };
+  }
+
+  async function handleStopCamera(): Promise<void> {
+    cameraStream?.getTracks().forEach((track) => track.stop());
+    setCameraStream(null);
+    await updateDoc(doc(db, 'users', currentUser.uid), {
+      cameraActive: false,
+    }).catch(() => undefined);
+  }
+
+  async function handleStartBroadcast(
+    config: StartBroadcastConfig,
+  ): Promise<void> {
     await startBroadcast(config);
     setShowBroadcastModal(false);
   }
@@ -90,18 +127,21 @@ export function Dashboard({ currentUser }: DashboardProps) {
   }
 
   async function handleLeaveSession(): Promise<void> {
+    if (cameraStream) await handleStopCamera();
     if (isBroadcasting) await stopBroadcast();
     if (watching) await stopWatching();
     await leaveSession();
   }
 
   async function handleEndSession(): Promise<void> {
+    if (cameraStream) await handleStopCamera();
     if (isBroadcasting) await stopBroadcast();
     if (watching) await stopWatching();
     await endSession();
   }
 
   async function handleLogout(): Promise<void> {
+    if (cameraStream) await handleStopCamera();
     if (isBroadcasting) await stopBroadcast();
     if (watching) await stopWatching();
     await logout();
@@ -113,10 +153,19 @@ export function Dashboard({ currentUser }: DashboardProps) {
     <Styles.DashboardWrapper>
       <Styles.DashboardHeader>
         <Styles.LogoContainer>
-          <img src={LogoStreama} width={200} loading="lazy" alt="Logo Roxa da Streama" />
+          <img
+            src={LogoStreama}
+            width={200}
+            loading="lazy"
+            alt="Logo Roxa da Streama"
+          />
         </Styles.LogoContainer>
 
-        <DropdownUser logOut={handleLogout} user={currentUser} name={displayName}>
+        <DropdownUser
+          logOut={handleLogout}
+          user={currentUser}
+          name={displayName}
+        >
           <Avatar src={currentUser.photoURL} name={displayName} size={50} />
         </DropdownUser>
       </Styles.DashboardHeader>
@@ -126,12 +175,8 @@ export function Dashboard({ currentUser }: DashboardProps) {
           <Card>
             <Styles.AlertContainer>
               <HeadingIcon icon={MonitorX}>
-                <Heading level={2}>
-                  Sessão encerrada
-                </Heading>
-                <SubHeading>
-                  O host encerrou a sessão.
-                </SubHeading>
+                <Heading level={2}>Sessão encerrada</Heading>
+                <SubHeading>O host encerrou a sessão.</SubHeading>
               </HeadingIcon>
 
               <Styles.CloseAlertContainer>
@@ -141,12 +186,15 @@ export function Dashboard({ currentUser }: DashboardProps) {
                   strokeWidth={5}
                   onComplete={dismissClosedNotice}
                 />
-                <Button variant="secondary" size='sm' onClick={dismissClosedNotice}>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={dismissClosedNotice}
+                >
                   Fechar
                 </Button>
               </Styles.CloseAlertContainer>
             </Styles.AlertContainer>
-
           </Card>
         </Styles.SectionSpacer>
       )}
@@ -175,7 +223,9 @@ export function Dashboard({ currentUser }: DashboardProps) {
                   <Text tone="secondary" small>
                     Código da sessão:
                   </Text>
-                  <Styles.SessionCode onClick={() => setShowCreateSessionModal(true)}>
+                  <Styles.SessionCode
+                    onClick={() => setShowCreateSessionModal(true)}
+                  >
                     {session.code}
                   </Styles.SessionCode>
                 </>
@@ -189,7 +239,10 @@ export function Dashboard({ currentUser }: DashboardProps) {
             <Styles.SessionBarActions>
               {session.isHost ? (
                 <>
-                  <Button variant="outline" onClick={() => setShowCreateSessionModal(true)}>
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowCreateSessionModal(true)}
+                  >
                     <KeyRound size={16} />
                     {!isMob && 'Ver código'}
                   </Button>
@@ -223,7 +276,21 @@ export function Dashboard({ currentUser }: DashboardProps) {
                 viewerCount={viewerCount}
                 onChangeQuality={changeHostQuality}
                 onStop={stopBroadcast}
+                onOpenCamera={() => setShowCameraModal(true)}
               />
+            </Styles.SectionSpacer>
+          )}
+
+          {cameraStream && (
+            <Styles.SectionSpacer>
+              <CameraGrid
+                currentUser={currentUser}
+                sessionId={session.sessionId}
+                stream={cameraStream}
+              />
+              <Button variant="danger" onClick={handleStopCamera}>
+                Desligar câmera
+              </Button>
             </Styles.SectionSpacer>
           )}
 
@@ -244,12 +311,28 @@ export function Dashboard({ currentUser }: DashboardProps) {
               <Styles.PanelHeaderRow>
                 <HeadingIcon icon={Users2} iconType="square">
                   <Heading level={2}>Usuários na sessão</Heading>
-                  <SubHeading>Acompanhe quem ingressou nesta sessão.</SubHeading>
+                  <SubHeading>
+                    Acompanhe quem ingressou nesta sessão.
+                  </SubHeading>
                 </HeadingIcon>
-                <Button variant="secondary" onClick={() => setShowBroadcastModal(true)}>
-                  <MonitorPlay size={24} color="#5d2ad9" />
-                  {!isMob && 'Iniciar Transmissão'}
-                </Button>
+                <Styles.SessionBarActions>
+                  {!cameraStream && (
+                    <Button
+                      variant="outline"
+                      onClick={() => setShowCameraModal(true)}
+                    >
+                      <Camera size={18} />
+                      {!isMob && 'Abrir câmera'}
+                    </Button>
+                  )}
+                  <Button
+                    variant="secondary"
+                    onClick={() => setShowBroadcastModal(true)}
+                  >
+                    <MonitorPlay size={24} color="#5d2ad9" />
+                    {!isMob && 'Iniciar Transmissão'}
+                  </Button>
+                </Styles.SessionBarActions>
               </Styles.PanelHeaderRow>
               <ActiveUsersList
                 currentUser={currentUser}
@@ -265,6 +348,12 @@ export function Dashboard({ currentUser }: DashboardProps) {
               onCancel={() => setShowBroadcastModal(false)}
               onStart={handleStartBroadcast}
               error={hostError}
+            />
+          )}
+          {showCameraModal && (
+            <CameraModal
+              onCancel={() => setShowCameraModal(false)}
+              onStart={handleStartCamera}
             />
           )}
         </>

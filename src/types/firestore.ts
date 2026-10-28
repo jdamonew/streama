@@ -35,6 +35,7 @@ export interface AppUser {
   /** Sessão em que o usuário está atualmente. `null` quando não está em nenhuma. */
   currentSessionId: string | null;
   lastSeen?: Timestamp | FieldValue;
+  cameraActive?: boolean;
 }
 
 /** Documento em `broadcasts/{broadcastId}`. */
