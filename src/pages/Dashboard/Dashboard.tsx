@@ -281,18 +281,10 @@ export function Dashboard({ currentUser }: DashboardProps) {
             </Styles.SectionSpacer>
           )}
 
-          {cameraStream && (
-            <Styles.SectionSpacer>
-              <CameraGrid
-                currentUser={currentUser}
-                sessionId={session.sessionId}
-                stream={cameraStream}
-              />
-              <Button variant="danger" onClick={handleStopCamera}>
-                Desligar câmera
-              </Button>
-            </Styles.SectionSpacer>
-          )}
+          <Styles.SectionSpacer>
+            <CameraGrid currentUser={currentUser} sessionId={session.sessionId} stream={cameraStream} />
+            {cameraStream && <Button variant="danger" onClick={handleStopCamera}>Desligar câmera</Button>}
+          </Styles.SectionSpacer>
 
           {watching && (
             <Styles.SectionSpacer>
